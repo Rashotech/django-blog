@@ -1,0 +1,149 @@
+{% extends 'layout.html' %} 
+{% block title %} Profile {% endblock %} 
+{% load widget_tweaks %}
+
+{% block content %}
+  <div class='bg-gray-800 text-white p-8 pt-12 flex flex-col md:px-20 lg:px-36 xl:px-60 2xl:px-80'>
+    <div>
+      <div class="relative right-0">
+        <ul
+          class="relative flex flex-wrap p-1 list-none rounded-xl bg-gray-900"
+          data-tabs="tabs"
+          role="list"
+        >
+          <li class="z-30 flex-auto text-center">
+            <a
+              class="z-30 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out border-0 rounded-lg cursor-pointer text-blue-600 bg-inherit"
+              data-tab-target=""
+              active=""
+              role="tab"
+              aria-selected="true"
+              aria-controls="app"
+            >
+              <span class="ml-1">Your Blog Posts</span>
+            </a>
+          </li>
+          <li class="z-30 flex-auto text-center">
+            <a
+              class="z-30 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out border-0 rounded-lg cursor-pointer  text-blue-600  bg-inherit"
+              data-tab-target=""
+              role="tab"
+              aria-selected="false"
+              aria-controls="settings"
+            >
+              <span class="ml-1">Edit Profile</span>
+            </a>
+          </li>
+        </ul>
+        <div data-tab-content="" class="p-5">
+          <div class="block opacity-100" id="app" role="tabpanel">
+            {% for blog in page_obj %}
+              <div
+                style="box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.05)"
+                class="flex flex-col md:flex-row gap-4 md:gap-x-8 bg-gray-900 p-5 mb-4 rounded-lg"
+              >
+                <img
+                  class="post-img-url rounded-lg object-cover"
+                  src="https://placehold.co/400x200/000000/FFFFFF/png"
+                  alt="image"
+                />
+                <div>
+                  <a
+                    class="text-blue-100 hover:text-blue-300 transition duration-300"
+                    href="/posts/{{blog.id}}"
+                    ><span class="text-xl font-extrabold">{{blog.title|slice:80}}</span></a
+                  ><br />
+                  <p class="my-3">{{blog.meta|slice:180|safe}}</p>
+                  <p class="mt-2 mb-4 text-gray-400">
+                    by <i class="bi bi-person"></i>
+                    <a 
+                      href="/posts/author/{{blog.author.id}}"
+                      class="capitalize group transition-all duration-500 ease-out"
+                      ><span
+                        class="capitalize bg-left-bottom bg-gradient-to-r from-cyan-300 to-blue-500 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out group-hover:text-cyan-200"
+                        >{{blog.author}}</span
+                      ></a
+                    >
+                    <i class="bi bi-dot"></i>
+                    <span><i class="bi bi-calendar4-event"></i> {{blog.created_at}}</span>
+                    <i class="bi bi-dot"></i><i class="bi bi-tag"></i>
+                    <a
+                      href="/posts/category/{{blog.category.id}}"
+                      class="group transition-all duration-500 ease-out"
+                      ><span
+                        class="bg-left-bottom bg-gradient-to-r from-cyan-300 to-blue-500 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out group-hover:text-cyan-200"
+                        >{{blog.category}}</span
+                      ></a
+                    >
+                  </p>
+                  <div class="flex justify-between">
+                    <a href="/posts/{{blog.id}}"
+                      ><button
+                        class="bg-blue-600 p-2 px-4 rounded-[6px] hover:bg-gray-800 hover:outline hover:outline-blue-600 transition delay-75 ease-in-out my-3"
+                      >
+                        Read more <i class="bi bi-arrow-right font-extrabold"></i></button
+                    ></a>
+                    {% if user.is_authenticated and user.get_username == blog.author.username %}
+                      <a href="/posts/{{blog.id}}/edit"
+                      ><button
+                        class="bg-blue-600 p-2 px-4 rounded-[6px] hover:bg-gray-800 hover:outline hover:outline-blue-600 transition delay-75 ease-in-out my-3"
+                      >
+                        Edit Post <i class="bi bi-pencil-square font-extrabold"></i></button
+                    ></a>
+                  {% endif %}
+                  </div>
+                </div>
+              </div>
+              {% empty %}
+                <p style="font-family: Poppins-Bold;" class='my-12 text-3xl font-extrabold md:text-5xl'>No posts available.</p>
+              {% endfor %}
+              
+              <div class="pagination py-8">
+                <span class="page-links">
+                  {% if page_obj.has_previous %}
+                  <div class="float-left">
+                    <a
+                      class="bg-blue-600 p-2 px-4 rounded-[6px] hover:bg-gray-800 hover:outline hover:outline-blue-600 transition delay-75 ease-in-out my-3"
+                      href="?page={{ page_obj.previous_page_number }}"
+                      ><i class="bi bi-arrow-left font-extrabold"></i> Previous</a
+                    >
+                  </div>
+                  {% endif %} {% if page_obj.has_next %}
+                  <div class="float-right">
+                    <a
+                      class="bg-blue-600 p-2 px-4 rounded-[6px] hover:bg-gray-800 hover:outline hover:outline-blue-600 transition delay-75 ease-in-out my-3"
+                      href="?page={{ page_obj.next_page_number }}"
+                      >Next <i class="bi bi-arrow-right font-extrabold"></i
+                    ></a>
+                  </div>
+                  {% endif %}
+                </span>
+              </div>
+          </div>
+          <div class="hidden opacity-0" id="settings" role="tabpanel">
+              <form class='flex-col p-5' id="edit_post_form" method="post" action="{% url 'users:profile_update' %}">
+                {% csrf_token %}
+                <div class='username'>
+                    <label for="username">Username</label><br>
+                    {% render_field form.username placeholder="UserName" id="username" name="username" type="text" required=True class="p-3 w-full my-2 bg-gray-900 border-slate-700 rounded-lg" %}
+                </div>
+                <div class='email'>
+                  <label for="email">Email Address</label><br>
+                  {% render_field form.email placeholder="Email Address" id="email" name="email" type="text" required=True class="p-3 w-full my-2 bg-gray-900 border-slate-700 rounded-lg" %}
+                </div>
+                <div class='first_name'>
+                  <label for="first_name">First Name</label><br>
+                  {% render_field form.first_name placeholder="First Name" id="first_name" name="first_name" type="text" required=True class="p-3 w-full my-2 bg-gray-900 border-slate-700 rounded-lg" %}
+                </div>
+                <div class='last_name'>
+                  <label for="last_name">Last Name</label><br>
+                  {% render_field form.last_name placeholder="Last Name" id="last_name" name="last_name" type="text" required=True class="p-3 w-full my-2 bg-gray-900 border-slate-700 rounded-lg" %}
+                </div>
+                <button type="submit" class='bg-blue-600 p-2 px-4 rounded-[6px] hover:bg-gray-800 hover:outline hover:outline-blue-600 transition delay-75 ease-in-out my-3'><i class="fa-regular fa-paper-plane"></i> Update Profile</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
