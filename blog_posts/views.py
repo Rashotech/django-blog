@@ -31,7 +31,9 @@ def author_filter(request, author_id):
 
 def single_post(request, post_id):
     post = get_object_or_404(BlogPost, id=post_id)
-    return render(request, 'blog_posts/single_post.html', { 'post': post })
+    comments = post.comments.filter(post=post).order_by('-created_at')
+    form = forms.CommentForm(request.POST)
+    return render(request, 'blog_posts/single_post.html', {'post': post, 'comments': comments, 'form': form})
 
 def search(request):
     query = request.GET.get('q')
@@ -77,3 +79,16 @@ def edit_blog_post(request, post_id):
     else:
         form = forms.CreatePost(instance=post)
     return render(request, 'blog_posts/edit_post.html', {'form': form, 'post': post})
+
+def create_comment(request, post_id):
+    if request.method == 'POST':
+        post = get_object_or_404(BlogPost, id=post_id)
+        comment_form = forms.CommentForm(request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.post = post
+            new_comment.save()
+            messages.success(request, 'Your comment has been added successfully!')
+            return redirect('posts:single_post', post_id=post.id)
+        else:
+            messages.error(request, 'Failed to add comment. Please try again later.')

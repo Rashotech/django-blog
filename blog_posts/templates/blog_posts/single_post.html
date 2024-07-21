@@ -1,5 +1,6 @@
 {% extends "layout.html" %} 
 {% block title %}{{post.title}}{% endblock title %}
+{% load widget_tweaks %}
 
 {% block content %}
   <div class='bg-gray-800 text-white p-8 pt-12 flex flex-col md:px-20 lg:px-36 xl:px-60 2xl:px-80'>
@@ -9,6 +10,42 @@
       <div class="w-full p-8 md:p-24 text-xl md:text-2xl text-white leading-normal" style="font-family:Poppins,serif;">
         {{post.content|safe}}
       </div>
+
+      <section class="py-8 lg:py-8 antialiased">
+        <div class="max-w-2xl mx-auto px-4">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-lg lg:text-2xl font-bold text-white">Comments</h2> 
+          </div>
+          <form class="mb-6" id="create_comment_form" method="post" action="{% url 'posts:create_comment' post.id %}">
+              {% csrf_token %}
+              <div class="py-2 px-4 mb-4 rounded-lg rounded-t-lg border bg-gray-900 border-gray-700">
+                  <label for="comment" class="sr-only">Your comment</label>
+                  {% render_field form.content id="content" name="content" placeholder="Write a comment..." type="text" required="True" class="px-0 w-full text-sm border-0 focus:ring-0 focus:outline-none text-white placeholder-gray-400 bg-gray-900" %}
+              </div>
+              <button type="submit"
+                  class="bg-blue-600 p-2 px-4 rounded-[6px] hover:bg-gray-800 hover:outline hover:outline-blue-600 transition delay-75 ease-in-out my-3">
+                  Post comment
+              </button>
+          </form> 
+
+          {% for comment in comments %}
+            <article class="p-6 text-base rounded-lg bg-gray-900 mb-4">
+              <footer class="flex justify-between items-center mb-2">
+                  <div class="flex items-center">
+                      <p class="inline-flex items-center mr-3 text-sm text-white font-semibold"><img
+                              class="mr-2 w-6 h-6 rounded-full"
+                              src="https://i.pravatar.cc/300"
+                              alt="User">OnyeBlog User</p>
+                      <p class="text-sm text-gray-400">{{ comment.created_at }}</p>
+                  </div>
+              </footer>
+              <p class="text-gray-400">{{ comment.content }}</p>
+            </article>
+          {% empty %}
+            <p class="text-gray-400">No comments yet.</p>
+          {% endfor %}
+        </div>
+      </section>
   </div>
   <style> 
       h1,
