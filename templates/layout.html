@@ -26,39 +26,35 @@
       </div>
       <div class="bg-gray-900 hidden items-center md:block">
         {% if user.is_authenticated %}
-          <a
-            href="/"
-            class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800 capitalize"
-            >Welcome {{ user.get_username }}</a
-          >
+          <p
+            class="inline-block p-2 px-3 my-1 text-white rounded-[8px capitalize"
+            >Welcome {{ user.get_username }}</p>
         {% else %}
           <a
             href="/"
             class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
-            >Home</a
-          >
+          >Home</a>
         {% endif %}
         <a
-          href="/blog"
+          href="{% url 'posts:create_blog_post' %}"
           class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
-          >Blog</a
-        >
+        >New Post</a> 
         {% if user.is_authenticated %}
           <a
-            href="/users/register"
+            href="/profile"
             class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
-          >New Post</a> 
+          >Profile</a>
           <form class="inline-block" action="{% url 'users:logout' %}" method="post">
             {% csrf_token %} 
             <button class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800" aria-label="User Logout">Logout 👋</button>
           </form>
         {% else %}
           <a
-            href="/users/register"
+            href="{% url 'users:register' %}"
             class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
             >Register</a
           >
-          <a href="/users/login"
+          <a href="{% url 'users:login' %}"
             class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
           >Login</a>
         {% endif %}
@@ -69,11 +65,32 @@
     </nav>
 
 		<div class="mob-nav bg-gray-900 hidden flex-col items-center w-full h-64 md:hidden">
+      {% if user.is_authenticated %}
+        <a href="/" class="capitalize p-2 px-36 my-1 text-white rounded-[8px]">Welcome {{ user.get_username }}</a>
+      {% endif %}
 			<a href="/" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800">Home</a>
-			<a href="/blog" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800">Blog</a>
-			<a href="/users/register" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800">Register</a>
-			<a href="/users/login" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800 ">Login</a>
+			<a href="{% url 'posts:create_blog_post' %}" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800">New Post</a>
+      {% if user.is_authenticated %}
+        <a href="/profile" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800">Profile</a>
+        <form action="{% url 'users:logout' %}" method="post">
+          {% csrf_token %} 
+          <button class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800" aria-label="User Logout">Logout 👋</button>
+        </form>
+      {% else %}
+        <a href="{% url 'users:register' %}" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800">Register</a>
+        <a href="{% url 'users:login' %}" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800 ">Login</a>
+      {% endif %}
 		</div>
+
+    {% if messages %}
+      <div class="messages grid place-content-center mt-6">
+          {% for message in messages %}
+          <div{% if message.tags %} class="{{ message.tags }} bg-slate-700 py-3 px-5 mx-5 rounded-lg flex items-center justify-center text-sm md:text-base"{% endif %}>
+              <p class=''><i class="fa-regular fa-bell"></i> {{ message }}</p>
+          </div>
+          {% endfor %}
+      </div>
+    {% endif %} 
 
     {% block content %} {% endblock %}
 

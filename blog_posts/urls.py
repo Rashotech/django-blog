@@ -8,4 +8,5 @@ urlpatterns = [
     path('category/<int:category_id>/', views.category_filter, name='category_filter'),
     path('<int:post_id>/', views.single_post, name='single_post'),
     path('search/', views.search, name='search'),
+    path('new/', views.create_blog_post, name='create_blog_post'),
 ]

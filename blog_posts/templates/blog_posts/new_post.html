@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block title %}New Post{% endblock title %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class='bg-gray-800 text-white p-3 md:px-10 lg:px-20 xl:px-40 2xl:px-72'>
+    <p style="font-family: Poppins-Bold" class='text-4xl font-extrabold py-5 text-center md:text-start'>Create New Blog Post</p>
+
+    <form class='flex-col p-5' id="new_post_form" method="post" action="{% url 'posts:create_blog_post' %}">
+        {% csrf_token %}
+        <div class='name'>
+            <label for="name">Title</label><br>
+            {% render_field form.title placeholder="Title" id="title" name="title" type="text" required=True class="p-3 w-full my-2 bg-gray-900 border-slate-700 rounded-lg" %}
+        </div>
+        <div class='content'>
+            <label for="content">Blog Content</label><br>
+            {% render_field form.content id="content" name="content" placeholder="Blog Content" type="text" required="True" class="p-3 resize-none w-full h-72 my-2 bg-gray-900 border-slate-700 rounded-lg" %}
+        </div>
+        <div class='name'>
+          <label for="name">Select Category</label><br>
+          {% render_field form.category id="Category" name="Category" required=True class="p-3 w-full my-2 bg-gray-900 border-slate-700 rounded-lg" %}
+      </div>
+        <button type="submit" class='bg-blue-600 p-2 px-4 rounded-[6px] hover:bg-gray-800 hover:outline hover:outline-blue-600 transition delay-75 ease-in-out my-3'><i class="fa-regular fa-paper-plane"></i> Create Post</button>
+    </form>
+</div>
+{% endblock %}

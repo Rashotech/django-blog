@@ -1,8 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from .models import BlogPost, Category
+from django.contrib.auth.decorators import login_required
+from . import forms 
 
 def category_filter(request, category_id):
     category = get_object_or_404(Category, id=category_id)
@@ -40,3 +43,19 @@ def search(request):
 
     categories = Category.objects.all()
     return render(request, 'homepage.html', {'page_obj': page_obj, 'categories': categories, 'search_query': query})
+
+@login_required(login_url="/users/login/")
+def create_blog_post(request):
+    if request.method == 'POST': 
+        form = forms.CreatePost(request.POST) 
+        if form.is_valid():
+            newpost = form.save(commit=False) 
+            newpost.author = request.user 
+            newpost.save()
+            messages.success(request, 'Blog post created successfully!')
+            return redirect('/')
+        else:
+            messages.error(request, 'Unable to create blog post.')
+    else:
+        form = forms.CreatePost()
+    return render(request, 'blog_posts/new_post.html', { 'form': form })
