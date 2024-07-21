@@ -13,7 +13,7 @@
     {% tailwind_css %}
   </head>
 
-  <body class="flex flex-col min-h-screen">
+  <body class="flex flex-col min-h-screen bg-gray-800">
     <nav
       class="nav bg-gray-900 text-white flex justify-between items-center p-3 px-8 md:px-20"
     >
@@ -124,6 +124,18 @@
 							</form>
 							<!-- Close Button -->
 							<button class="searchCloseBtn m-2 absolute top-0 right-0 font-medium transition-colors p-4 focus:outline-none" aria-label="Close"><i class="bi bi-x text-xl"></i></button>
+
+              {% if categories %}
+                <div class='mx-3'>
+                  <div class='flex flex-wrap md:flex-grow-2 justify-start space-x-3 text-sm md:text-base m-4 -mt-10 mb-8'>
+                    {% for category in categories %}
+                      <a href="/posts/category/{{category.id}}" class='sm:text-[12px] '><button class='bg-gray-800 p-2 px-4 rounded-[6px] hover:bg-blue-600 outline hover:outline-none outline-slate-700 transition delay-75 ease-in-out my-3'>
+                        {{ category }}
+                      </button></a>
+                    {% endfor %}
+                  </div>
+              </div>
+            {% endif %}
 			</div>
 	</div>
 
@@ -247,7 +259,9 @@
       }, 500);
       return;
     }
-    window.open("/search/?q=" + encodeURIComponent(searchQuery));
+   
+    window.location.assign("/posts/search/?q=" + encodeURIComponent(searchQuery));
+    hideSearchModal();
   }  
 
   // Add event listeners

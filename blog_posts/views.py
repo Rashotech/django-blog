@@ -39,4 +39,4 @@ def search(request):
     page_obj = paginator.get_page(page_number)
 
     categories = Category.objects.all()
-    return render(request, 'blog_posts/search_results.html', {'page_obj': page_obj, 'categories': categories, 'search_query': query})
+    return render(request, 'homepage.html', {'page_obj': page_obj, 'categories': categories, 'search_query': query})
