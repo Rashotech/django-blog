@@ -13,7 +13,7 @@
     {% tailwind_css %}
   </head>
 
-  <body>
+  <body class="flex flex-col min-h-screen">
     <nav
       class="nav bg-gray-900 text-white flex justify-between items-center p-3 px-8 md:px-20"
     >
@@ -25,26 +25,43 @@
         <i class="nav-btn bi bi-list cursor-pointer md:hidden"></i>
       </div>
       <div class="bg-gray-900 hidden items-center md:block">
-        <a
-          href="/"
-          class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
-          >Home</a
-        >
+        {% if user.is_authenticated %}
+          <a
+            href="/"
+            class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
+            >Welcome {{ user.get_username }}</a
+          >
+        {% else %}
+          <a
+            href="/"
+            class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
+            >Home</a
+          >
+        {% endif %}
         <a
           href="/blog"
           class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
           >Blog</a
         >
-        <a
-          href="/register"
-          class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
-          >Register</a
-        >
-        <a
-          href="/login"
-          class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
-          >Login</a
-        >
+        {% if user.is_authenticated %}
+          <a
+            href="/users/register"
+            class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
+          >New Post</a> 
+          <form class="inline-block" action="{% url 'users:logout' %}" method="post">
+            {% csrf_token %} 
+            <button class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800" aria-label="User Logout">Logout 👋</button>
+          </form>
+        {% else %}
+          <a
+            href="/users/register"
+            class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
+            >Register</a
+          >
+          <a href="/users/login"
+            class="p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800"
+          >Login</a>
+        {% endif %}
         <i
           class="searchBtn1 p-2 px-3 my-1 text-white rounded-[8px] hover:bg-gray-800 mt-1 bi bi-search text-sm cursor-pointer"
         ></i>
@@ -54,39 +71,41 @@
 		<div class="mob-nav bg-gray-900 hidden flex-col items-center w-full h-64 md:hidden">
 			<a href="/" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800">Home</a>
 			<a href="/blog" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800">Blog</a>
-			<a href="/register" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800">Register</a>
-			<a href="/login" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800 ">Login</a>
+			<a href="/users/register" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800">Register</a>
+			<a href="/users/login" class="p-2 px-36 my-1 text-white rounded-[8px] hover:bg-gray-800 ">Login</a>
 		</div>
 
     {% block content %} {% endblock %}
 
-		<footer class='bg-gray-900 text-white p-8 pb-2 grid md:grid-cols-3 md:gap-10 lg:gap-20 xl:gap-30 2xl:gap-40 md:px-40'>
-			<div class='blog-name'>
-					<p class='text-xl font-bold'>Onye Blog<p>
-					<p class='my-3 text-justify'>Giving you the latest health technology industry latest news and trend</p>
-			</div>
-			<div class='pages'>
-					<p class='text-xl font-bold'>Pages<p>
-					<ul class='my-3'>
-							<li><a href='/'><i class="bi bi-arrow-right-short"></i> Privacy Policy</a></li>
-							<li><a href='/'<i class="bi bi-arrow-right-short"></i> Terms of Use</a></li>
-							<li><a href='/'<i class="bi bi-arrow-right-short"></i> Disclaimer</a></li>
-					</ul>
-			</div>
-			<div class='socials'>
-					<p class='text-xl font-bold'>Follow Us on Social Media<p>
-					<ul class='my-3 flex text-3xl space-x-2'>
-							<li><a href='/' class='hover:text-blue-100'><i class="bi bi-facebook"></i></a></li>
-							<li><a href='/' class='hover:text-blue-100'><i class="bi bi-twitter-x"></i></a></li>
-							<li><a href='/' class='hover:text-blue-100'><i class="bi bi-instagram"></i></a></li>
-							<li><a href='/' class='hover:text-blue-100'><i class="bi bi-youtube"></i></a></li>
-							<li><a href='/' class='hover:text-blue-100'><i class="bi bi-linkedin"></i></a></li>
-					</ul>
-			</div>
-	</footer>
-	<div class='bg-slate-800 text-white text-justify flex justify-center items-center'>
-			<p class='p-2'>Copyright &copy;<script>document.write(new Date().getFullYear())</script> <span class="text-blue-300 text-justify"><a href="/" target="_blank">Onye Blog</a></span> All Rights Reserved</p>
-	</div>
+    <div class="mt-auto"> 
+      <footer class='bg-gray-900 text-white p-8 pb-2 grid md:grid-cols-3 md:gap-10 lg:gap-20 xl:gap-30 2xl:gap-40 md:px-40'>
+        <div class='blog-name'>
+            <p class='text-xl font-bold'>Onye Blog<p>
+            <p class='my-3 text-justify'>Giving you the latest health technology industry latest news and trend</p>
+        </div>
+        <div class='pages'>
+            <p class='text-xl font-bold'>Pages<p>
+            <ul class='my-3'>
+                <li><a href='/'><i class="bi bi-arrow-right-short"></i> Privacy Policy</a></li>
+                <li><a href='/'<i class="bi bi-arrow-right-short"></i> Terms of Use</a></li>
+                <li><a href='/'<i class="bi bi-arrow-right-short"></i> Disclaimer</a></li>
+            </ul>
+        </div>
+        <div class='socials'>
+            <p class='text-xl font-bold'>Follow Us on Social Media<p>
+            <ul class='my-3 flex text-3xl space-x-2'>
+                <li><a href='/' class='hover:text-blue-100'><i class="bi bi-facebook"></i></a></li>
+                <li><a href='/' class='hover:text-blue-100'><i class="bi bi-twitter-x"></i></a></li>
+                <li><a href='/' class='hover:text-blue-100'><i class="bi bi-instagram"></i></a></li>
+                <li><a href='/' class='hover:text-blue-100'><i class="bi bi-youtube"></i></a></li>
+                <li><a href='/' class='hover:text-blue-100'><i class="bi bi-linkedin"></i></a></li>
+            </ul>
+        </div>
+      </footer>
+      <div class='bg-slate-800 text-white text-justify flex justify-center items-center'>
+          <p class='p-2'>Copyright &copy;<script>document.write(new Date().getFullYear())</script> <span class="text-blue-300 text-justify"><a href="/" target="_blank">Onye Blog</a></span> All Rights Reserved</p>
+      </div>
+    </div>
 
 	<div class="searchModal text-white z-50 fixed bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
 			<div class="fixed inset-0 transition-opacity">
