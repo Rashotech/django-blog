@@ -59,3 +59,21 @@ def create_blog_post(request):
     else:
         form = forms.CreatePost()
     return render(request, 'blog_posts/new_post.html', { 'form': form })
+
+@login_required(login_url="/users/login/")
+def edit_blog_post(request, post_id):
+    post = get_object_or_404(BlogPost, id=post_id)
+    if post.author != request.user:
+        messages.error(request, 'You do not have permission to edit this post.')
+        return redirect('/')
+    if request.method == 'POST':
+        form = forms.CreatePost(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Post updated successfully!')
+            return redirect('/')
+        else:
+            messages.error(request, 'Failed to update post.')
+    else:
+        form = forms.CreatePost(instance=post)
+    return render(request, 'blog_posts/edit_post.html', {'form': form, 'post': post})

@@ -58,12 +58,22 @@
               ></a
             >
           </p>
-          <a href="/posts/{{blog.id}}"
-            ><button
-              class="bg-blue-600 p-2 px-4 rounded-[6px] hover:bg-gray-800 hover:outline hover:outline-blue-600 transition delay-75 ease-in-out my-3"
-            >
-              Read more <i class="bi bi-arrow-right font-extrabold"></i></button
-          ></a>
+          <div class="flex justify-between">
+            <a href="/posts/{{blog.id}}"
+              ><button
+                class="bg-blue-600 p-2 px-4 rounded-[6px] hover:bg-gray-800 hover:outline hover:outline-blue-600 transition delay-75 ease-in-out my-3"
+              >
+                Read more <i class="bi bi-arrow-right font-extrabold"></i></button
+            ></a>
+            {% if user.is_authenticated and user.get_username == blog.author.username %}
+              <a href="/posts/{{blog.id}}/edit"
+              ><button
+                class="bg-blue-600 p-2 px-4 rounded-[6px] hover:bg-gray-800 hover:outline hover:outline-blue-600 transition delay-75 ease-in-out my-3"
+              >
+                Edit Post <i class="bi bi-pencil-square font-extrabold"></i></button
+            ></a>
+          {% endif %}
+          </div>
         </div>
       </div>
     {% empty %}
