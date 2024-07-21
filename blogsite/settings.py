@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'theme',
     'widget_tweaks',
     'users',
+    'blog_posts',
 ]
 
 MIDDLEWARE = [
