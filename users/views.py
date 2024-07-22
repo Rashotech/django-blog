@@ -55,3 +55,6 @@ def profile_update(request):
             return redirect('users:profile')
         else:
             messages.error(request, 'Failed to update profile.')
+            return redirect('users:profile')
+    else:
+        return redirect('users:profile')
