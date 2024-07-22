@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.messages import get_messages
 from blog_posts.models import BlogPost
+from .forms import CustomUserCreationForm
 
 class UserViewsTestCase(TestCase):
     def setUp(self):
@@ -25,17 +26,19 @@ class UserViewsTestCase(TestCase):
         response = self.client.get(self.register_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/register.html')
-        self.assertIsInstance(response.context['form'], UserCreationForm)
+        self.assertIsInstance(response.context['form'], CustomUserCreationForm)
 
     def test_register_view_post(self):
-        response = self.client.post(self.register_url, {
-            'username': 'newuser',
-            'password1': 'newpassword123',
-            'password2': 'newpassword123'
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/')
-        self.assertTrue(User.objects.filter(username='newuser').exists())
+      response = self.client.post(self.register_url, {
+          'username': 'newuser',
+          'email': 'newuser@example.com',
+          'password1': 'newpassword123',
+          'password2': 'newpassword123'
+      })
+      self.assertEqual(response.status_code, 302)
+      self.assertRedirects(response, '/')
+      self.assertTrue(User.objects.filter(username='newuser').exists())
+      self.assertTrue(User.objects.filter(email='newuser@example.com').exists())
 
     def test_login_view_get(self):
         response = self.client.get(self.login_url)
