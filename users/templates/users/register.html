@@ -29,8 +29,7 @@
             </div>
             <div>
                 {{ form.email.errors | safe }}
-                {{ form.email|add_class:"relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" }}
-                <input id="email" name="email" type="email" placeholder="Email" autocomplete="email" required class="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                {% render_field form.email placeholder="Email" id="email" name="email" type="text" required=True class="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" %}
             </div>
             <div>
               {{ form.password1.errors | safe }}
