@@ -28,6 +28,10 @@ python manage.py migrate
 ```python
 python manage.py runserver
 ```
+8. Run test:
+```python
+python manage.py test
+```
 
 ## Technologies used
 1. HTML
