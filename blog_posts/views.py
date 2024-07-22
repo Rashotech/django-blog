@@ -92,3 +92,6 @@ def create_comment(request, post_id):
             return redirect('posts:single_post', post_id=post.id)
         else:
             messages.error(request, 'Failed to add comment. Please try again later.')
+    else:
+        comment_form = forms.CommentForm()
+    return render(request, 'blog_posts/single_post.html', {'post': post, 'form': comment_form})
